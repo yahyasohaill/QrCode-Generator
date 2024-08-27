@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <input type="text" id="urlInput" placeholder="Enter URL" />
+        <div id="qrCodeDisplay" class="qr-code-display"></div>
+        <button id="generateButton" onclick="generateQr()">Generate QR Code</button>
+        <div id="loadingBar" class="loading-bar">
+            <div class="spinner"></div>
+            <p>Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        function generateQr() {
+            const urlInput = document.getElementById("urlInput");
+            const qrCodeDisplay = document.getElementById("qrCodeDisplay");
+            const loadingBar = document.getElementById("loadingBar");
+
+            // Show loading bar
+            loadingBar.style.display = "flex";
+
+            // Clear any existing QR code image
+            qrCodeDisplay.innerHTML = "";
+
+            // Get the URL from the input field
+            const url = urlInput.value;
+            if (url) {
+                // Create a new image element for the QR code
+                const image = document.createElement("img");
+                image.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(url)}`;
+                
+                // Append the image to the display div once it has loaded
+                image.onload = () => {
+                    // Hide loading bar
+                    loadingBar.style.display = "none";
+                    qrCodeDisplay.appendChild(image);
+                };
+
+                // Handle image load error
+                image.onerror = () => {
+                    loadingBar.style.display = "none";
+                    alert("Failed to generate QR code.");
+                };
+            } else {
+                loadingBar.style.display = "none";
+                alert("Please enter a URL.");
+            }
+        }
+    </script>
+</body>
+</html>
